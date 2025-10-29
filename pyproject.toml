@@ -6,7 +6,17 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pillow>=12.0.0",
-    "torch>=2.9.0",
-    "torchvision>=0.24.0",
     "transformers>=4.57.1",
+    # Use conditional dependencies based on platform
+    "torch>=2.9.0; platform_machine == 'x86_64' or platform_machine == 'aarch64'",
+    "torchvision>=0.24.0; platform_machine == 'x86_64' or platform_machine == 'aarch64'",
+    # Lightweight alternative for ARM devices
+    "onnxruntime>=1.16.0; platform_machine == 'armv6l' or platform_machine == 'armv7l'",
+]
+
+[tool.uv]
+# Tell uv that we need to support armv6l/armv7l platforms
+required-environments = [
+    "sys_platform == 'linux' and platform_machine == 'armv6l'",
+    "sys_platform == 'linux' and platform_machine == 'armv7l'",
 ]
