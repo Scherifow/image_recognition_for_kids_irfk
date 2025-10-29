@@ -20,11 +20,3 @@ full = [
     "torch>=2.9.0",
     "torchvision>=0.24.0",
 ]
-
-[tool.uv]
-# Only resolve for platforms where we have compatible wheels
-environments = [
-    "sys_platform == 'win32'",
-    "sys_platform == 'darwin'", 
-    "sys_platform == 'linux' and (platform_machine == 'x86_64' or platform_machine == 'aarch64')",
-]
