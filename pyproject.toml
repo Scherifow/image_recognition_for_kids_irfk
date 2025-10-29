@@ -6,17 +6,25 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pillow>=12.0.0",
-    "transformers>=4.57.1",
-    # Use conditional dependencies based on platform
+    # Use transformers without torch backend on ARM
+    "transformers[sentencepiece]>=4.57.1; platform_machine == 'armv6l' or platform_machine == 'armv7l'",
+    "transformers>=4.57.1; platform_machine != 'armv6l' and platform_machine != 'armv7l'",
+    # Only install torch on supported platforms
     "torch>=2.9.0; platform_machine == 'x86_64' or platform_machine == 'aarch64'",
     "torchvision>=0.24.0; platform_machine == 'x86_64' or platform_machine == 'aarch64'",
-    # Lightweight alternative for ARM devices
-    "onnxruntime>=1.16.0; platform_machine == 'armv6l' or platform_machine == 'armv7l'",
+]
+
+[project.optional-dependencies]
+# Optional dependencies for development/desktop platforms
+full = [
+    "torch>=2.9.0",
+    "torchvision>=0.24.0",
 ]
 
 [tool.uv]
-# Tell uv that we need to support armv6l/armv7l platforms
-required-environments = [
-    "sys_platform == 'linux' and platform_machine == 'armv6l'",
-    "sys_platform == 'linux' and platform_machine == 'armv7l'",
+# Only resolve for platforms where we have compatible wheels
+environments = [
+    "sys_platform == 'win32'",
+    "sys_platform == 'darwin'", 
+    "sys_platform == 'linux' and (platform_machine == 'x86_64' or platform_machine == 'aarch64')",
 ]
